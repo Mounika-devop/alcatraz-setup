@@ -1,0 +1,17 @@
+[Service]
+User=<%=@mongo_user%>
+Group=<%=@mongo_user%>
+ExecStart=/usr/bin/mongos --configdb <%= @configdbs_and_port1 %> --port <%=@mongod_port%> --sslMode requireSSL --sslPEMKeyFile  /etc/ssl/mongodb.pem --logpath /logs/mongodb/mongodbdr.log --keyFile /etc/ssl/mongokeyfile
+
+# (file size)
+LimitFSIZE=infinity
+# (cpu time)
+LimitCPU=infinity
+# (virtual memory size)
+LimitAS=infinity
+# (open files)
+LimitNOFILE=64000
+# (processes/threads)
+LimitNPROC=64000
+[Install]
+WantedBy=multi-user.target

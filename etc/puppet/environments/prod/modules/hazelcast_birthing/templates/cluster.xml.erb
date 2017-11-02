@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds">
+ <appender name="A1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file><%=@haz_log_dir%>/hazelcast.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern><%=@haz_log_dir%>/hazelcast.log.%i</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>9</maxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+
+    <encoder>
+      <pattern>%d{ISO8601} [%p] [THREAD ID=%t] ${HOSTNAME} %c{1} %m%n</pattern>
+    </encoder>
+ </appender>
+
+ <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file><%=@haz_log_dir%>/access.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern><%=@haz_log_dir%>/access.log.%i</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>9</maxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %c{1} [%p] %m%n</pattern>
+    </encoder>
+  </appender>
+
+<appender name="AAAA" class="com.actiance.platform.sfab.ias.clogger.internal.CustomAppenderStormLogBack">
+            <layout>
+           <pattern>%d{ISO8601} [%p] [THREAD ID=%t] ${HOSTNAME} %c{1} %m%n</pattern>
+            </layout>
+         <scribeHost>127.0.0.1</scribeHost>
+         <scribePort><%=@scribe_port%></scribePort>
+   </appender>
+
+  <appender name="METRICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file><%=@haz_log_dir%>/metrics.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern><%=@haz_log_dir%>/metrics.log.%i</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>9</maxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>100MB</maxFileSize>
+    </triggeringPolicy>
+
+    <encoder>
+      <pattern>%d %-8r %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="A1"/>
+<appender-ref ref="AAAA"/>
+  </root>
+
+<!--
+<logger name="com.actiance.platform.sfab.cis.search.es.client.annotation.DocumentAnnotateTask" additivity="false">
+    <level value="TRACE" />
+    <appender-ref ref="ACCESS" />
+  </logger> -->
+
+</configuration>

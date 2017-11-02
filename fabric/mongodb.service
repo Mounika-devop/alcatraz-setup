@@ -1,0 +1,16 @@
+[Service]
+User=appsuser
+Group=appsuser
+ExecStart=/usr/bin/mongos --configdb fab-emea01-mdbconf-h1:23758,fab-emea01-mdbconf-h2:23758,fab-emdr01-mdbconf-h3:23758 --port 23757 --sslMode requireSSL --sslPEMKeyFile  /etc/ssl/mongodb.pem --logpath /logs/mongodb/mongodb.log --keyFile /etc/ssl/mongokeyfile
+# (file size)
+LimitFSIZE=infinity
+# (cpu time)
+LimitCPU=infinity
+# (virtual memory size)
+LimitAS=infinity
+# (open files)
+LimitNOFILE=64000
+# (processes/threads)
+LimitNPROC=64000
+[Install]
+WantedBy=multi-user.target

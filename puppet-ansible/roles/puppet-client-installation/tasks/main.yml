@@ -1,0 +1,25 @@
+---
+- name: Remove previous version of puppet
+  apt: name=puppet,puppet-common,facter,hiera state=absent purge=yes
+
+- name: Auto remove
+  shell: apt-get autoremove -y
+
+- name: apt update
+  apt: update_cache=yes
+
+- name: Install Puppet Client
+  apt: name=puppet state=present
+
+- name: Configure puppet master
+  template: src=puppet.conf dest=/etc/puppet/
+
+- name: stop puppet service
+  service: name=puppet state=stopped
+
+- name: Enable puppet agent
+  shell: puppet agent --enable
+  become: yes
+
+- name: Remove puppet ssl directory 
+  shell: rm -rfv /var/lib/puppet/ssl

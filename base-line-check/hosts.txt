@@ -1,0 +1,12 @@
+fab-storlab-haz-h1
+fab-storlab-haz-h2
+fab-storlab-haz-h3
+fab-storlab-stm-h1
+fab-storlab-stm-h2
+fab-storlab-stm-h3
+fab-storlab-karaf-h1
+fab-storlab-karaf-h2
+fab-storlab-karaf-h3
+fab-storlab-nfs-h1
+fab-storlab-nfs-h2
+fab-storlab-puppet-h4

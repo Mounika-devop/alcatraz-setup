@@ -1,0 +1,1 @@
+/home/sysops/apps/storm-0.9.0.1/bin/storm  jar  actiance-cis-dpe-lycan-core-1.0.0*.jar com.actiance.platform.sfab.cis.dpe.lycan.fa.pipeline.ingestion.itm.ITMReIndexTopology /home/sysops/apps/storm-0.9.0.1/conf/server.properties tocluster 

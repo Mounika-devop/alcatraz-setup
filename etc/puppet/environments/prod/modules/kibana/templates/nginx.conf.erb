@@ -1,0 +1,160 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    default_type  text/html;
+    keepalive_timeout  65;
+
+server {
+##SET ALL THE CUSTOM  ENV PROPERTIES
+set $kibanaurl https://<%= @ipaddress %>:<%= @kibana_port %>; ##KIBANA URL
+set $kibana_searchguard_auth_string "Basic <%= @base64_credentials %>" ; ##SEARCH GUARD AUTHROIZATION HEADER IN BASE64 ENCODE
+
+set $kibana_ssocallback_res_prefix_login "<!DOCTYPE HTML><html><head><script type='text/javascript'>(function () {parent.postMessage('LOGIN_SUCCESS','https://";
+set $kibana_ssocallback_res_prefix_logout "<!DOCTYPE HTML><html><head><script type='text/javascript'>(function () {parent.postMessage('LOGOUT_SUCCESS','https://";
+set $kibana_ssocallback_res_sufix "')})(); </script> </head></html>" ;
+
+###########################################
+## SET THE NGINX CINFIGURATION PROPERTIES ##
+###########################################
+
+listen                *:<%= @nginx_port %>; ##REPORT PORT
+ssl on;
+ssl_certificate <%= @certs_dir %>/actiancecrt.pem;  ## Replace with your own certificate
+ssl_certificate_key <%= @certs_dir %>/actiancekey.pem;  ## Replae with the key
+access_log <%= @nginx_log_dir %>/kibana.access.log; ## Path to store the Nginx access log
+error_log  <%= @nginx_log_dir %>/kibana.error.log;  ## Path to store the Nginx error log
+
+#Hide the server information in the response Header.
+#more_set_headers 'Server: ';
+#Redirect to Alcatraz error page  in case of any Error.
+error_page 403 400 404 405 401 500 502 503 504 /error;
+
+location  = /error {
+        internal;
+        set $ref "*";
+                if ($http_host ~* ^(<%= @report_domain %>)(.*)$) {
+                     set $ref $2;
+        }
+
+        set $errorUrl  "https://$ref/ediscovery/notification.action?t=5";
+
+        access_by_lua '
+               ngx.redirect(ngx.var.errorUrl)
+        ';
+}
+
+#All the request will hits this path and goes for authentication & authorization
+location /{
+	#Block all the delete call to Kibana
+	if ( $request_method ~ ^(DELETE)$ ){
+		return 405;
+	}
+    	access_by_lua '
+		ngx.req.read_body()  -- explicitly read the req body
+
+		local res = ngx.location.capture("/auth",{always_forward_body = true})
+
+		if res.status == ngx.HTTP_OK then
+           	   return
+       		end
+
+		return ngx.exit(res.status)
+  	';
+	proxy_pass $kibanaurl;
+	proxy_set_header Authorization $kibana_searchguard_auth_string;
+
+}
+
+location = /app/kibana/login {
+
+	set $ref "*";
+                if ($http_host ~* ^(<%= @report_domain %>)(.*)$) {
+                        set $ref $2;
+        }
+
+    set $ssokibanaurl  "https://$ref/ediscovery/ssokibana.action?callback=ssokibanacallback";
+
+	access_by_lua '
+	       ngx.redirect(ngx.var.ssokibanaurl)
+	';
+}
+
+location = /ssokibanacallback {
+
+	 set $ref "*";
+                if ($http_host ~* ^(<%= @report_domain %>)(.*)$) {
+                        set $ref $2;
+        }
+
+	access_by_lua '
+		ngx.req.read_body()  -- explicitly read the req body
+
+		local uuid_cookie
+		local xdcc_cookie
+		local args = ngx.req.get_post_args()
+   		for key, val in pairs(args) do
+        		if (key == "uuid") then
+	  	      		uuid_cookie = "uuid=" .. val .. "; Path =/ ; Domain=<%= @report_domain %>" .. ngx.var.ref .. "; HttpOnly;Secure; "
+        		end
+	   		if (key == "xdcc") then
+         		        xdcc_cookie = "xdcc=" .. val .. "; Path =/ ; Domain=<%= @report_domain %>" .. ngx.var.ref .. "; Secure;"
+        		end
+    		end
+		ngx.header["Set-Cookie"] = {uuid_cookie, xdcc_cookie}
+
+		if uuid_cookie == nil or uuid_cookie == "" then
+       				ngx.redirect(ngx.var.ssokibanaurl)
+   	 	end
+
+	 ';
+
+	content_by_lua '
+		ngx.status = 200
+		ngx.say(ngx.var.kibana_ssocallback_res_prefix_login .. ngx.var.ref .. ngx.var.kibana_ssocallback_res_sufix)
+     	ngx.exit(ngx.OK)
+	';
+}
+
+location  = /app/kibana/logout {
+
+	#default_type  text/html;
+	set $ref "*";
+            if ($http_host ~* ^(<%= @report_domain %>)(.*)$) {
+                    set $ref $2;
+        }
+	access_by_lua '
+
+			local uuid_cookie = "uuid= ; Path =/ ; Expires=Thu, 01-Jan-1970 00:00:01 GMT"
+			local xdcc_cookie = "xdcc= ; Path =/ ; Expires=Thu, 01-Jan-1970 00:00:01 GMT"
+        	ngx.header["Set-Cookie"] = {uuid_cookie, xdcc_cookie}
+
+	';
+	content_by_lua '
+            ngx.status = 200
+            ngx.say(ngx.var.kibana_ssocallback_res_prefix_logout .. ngx.var.ref .. ngx.var.kibana_ssocallback_res_sufix)
+            ngx.exit(ngx.OK)
+    ';
+}
+
+#DNS Resolver IP to resolve the DNS entry
+resolver <%= @dns_ip %>;
+#internal auth call to Alcatraz
+location /auth{
+	internal;
+	lua_need_request_body on;
+	proxy_method POST;
+	#Getting the alcatraz domain out of Kibana Host
+	set $ref "*";
+	     	if ($http_host ~* ^(<%= @report_domain %>)(.*)$) {
+				set $ref $2;
+	}
+	#Call Alcatraz for Authentication & Authorization
+	proxy_pass https://$ref/cxf/auth/checkKibanaAuth?xdcc=$cookie_xdcc;
+	proxy_set_header X-Kibana-URI $request_uri;
+    }
+  }
+}

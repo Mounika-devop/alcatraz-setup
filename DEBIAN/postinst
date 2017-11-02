@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pconf_dir=/etc/puppet/environments
+env=$(hostname | awk -F- '{print $2}')
+site_path=$pconf_dir/$env/manifests
+kaf_top_path=$pconf_dir/kafka_topics/manifests
+rhine_path=$pconf_dir/rhine/manifests
+cp -dpR $pconf_dir/prod/* $pconf_dir/$env
+sed -i -e "/dr0[12]/s/dr0[12]/${env}/g" $site_path/site.pp
+sed -i -e "/dr0[12]/s/dr0[12]/${env}/g" $kaf_top_path/site.pp
+sed -i -e "/dvps01/${env}/g" $kaf_top_path/site.pp
+rm -rf $pconf_dir/prod

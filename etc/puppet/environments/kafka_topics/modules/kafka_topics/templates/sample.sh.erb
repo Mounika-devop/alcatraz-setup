@@ -1,0 +1,53 @@
+#!/bin/bash
+
+<%
+kafka =  {
+    "cephboot": "16",
+    "cephbootsec": "16",
+    "drPriPrimary": "16",
+    "drPriSecondary": "16",
+    "drSeqPrimary": "16",
+    "drSeqSecondary": "16",
+    "export": "8",
+    "exportArchiveLargeTopic": "16",
+    "exportArchiveMediumLargeTopic": "8",
+    "exportArchiveMediumTopic": "8",
+    "exportArchivePriorityTopic": "8",
+    "exportArchiveSmallMediumTopic": "8",
+    "exportArchiveSmallTopic": "8",
+    "exportEdiscoveryLargeTopic": "16",
+    "exportEdiscoveryMediumLargeTopic": "16",
+    "exportEdiscoveryMediumTopic": "8",
+    "exportEdiscoveryPriorityTopic": "8",
+    "exportEdiscoverySmallMediumTopic": "8",
+    "exportEdiscoverySmallTopic": "8",
+    "exportPriorityTopic": "8",
+    "exportSupervisionLargeTopic": "16",
+    "exportSupervisionMediumLargeTopic": "16",
+    "exportSupervisionMediumTopic": "8",
+    "exportSupervisionPriorityTopic": "8",
+    "exportSupervisionSmallMediumTopic": "8",
+    "exportSupervisionSmallTopic": "8",
+    "filegateway": "1",
+    "gateway": "1",
+    "jobs": "8",
+    "smallHoldTagTopic": "8",
+    "largeHoldTagTopic": "16",
+    "mediumHoldTagTopic": "8",
+    "largemsg": "16",
+    "purge": "16",
+    "reindex": "16",
+    "rs1": "16",
+    "supervisionLargeTopic": "16",
+    "supervisionMediumTopic": "8",
+    "supervisionSmalTopic": "8",
+    "lfs": "16",
+    "errorMetrics": "8",
+}
+
+
+delimiter = ":"
+%>
+<% kafka.each do |topic,partition| -%>
+/apps/kafka/bin/kafka-topics.sh --zookeeper <%= @zoo_hosts.map{ |zk| "#{zk}:#{zoo_port}"}.join(',')%> --create --topic <%=topic%> --partitions <%=partition%> --replication-factor 3
+<% end -%>

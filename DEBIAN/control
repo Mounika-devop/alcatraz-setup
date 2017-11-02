@@ -1,0 +1,7 @@
+Package: alcatraz-puppet
+Version: 0.0.7
+Architecture: amd64
+Maintainer: "Anto Daniel" <apaul@actiance.com>
+Description: Puppet Modules for alcatraz
+ fabrics like mongo, elasticsearch, storm,
+ hazelcast, karaf.

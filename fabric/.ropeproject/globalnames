@@ -1,0 +1,6 @@
+€}q(Usample]UPartitionandMount]q(U	mountpathqUcmd4qUcmd5qUcmd1qUcmd2qUcmd3qUmysshq	Uoutq
+UdisknameqUpasswordqUrvalqUfstypeqUhostqUuserqUremoteqUerrqUcmdqUeeUfabfile]q(Uglib_vulnerableqUlsblkqUcopy_townsend_keysqU	push_cephqUinstall_nfsqUpush_data_mount_pointqUinstall_puppet_ganglia_agentqUpush_townsendqUprepare_deployqUinstall_disk_prepareqUtestqUextract_storm_bin_dirq Upush_karaf_scriptq!Uusermod_appsuserq"Uextract_storm_start_up_scriptsq#Urun_puppet_agentq$Upush_ingestion_doc_scriptsq%Ucreate_app_userq&U
+set_ulimitq'U
+check_diskq(Ucreate_ceph_userq)Urescan_scsiq*Uganglia_modulesq+Uhelloq,eUReport_VMDisk]q-(Uusernameq.Uarrq/hhUout1q0hUfUihUcsvfileq1Uwriterq2UrUarr1q3UxUesxilistq4h
+eUDiskPrepare]q5(h	Uvmnameq6h
+hUehostq7UNEWVMDKq8Usizeq9Ueuserq:hU	epasswordq;Udsq<hhUvmidq=Uretvalq>Ueeu.

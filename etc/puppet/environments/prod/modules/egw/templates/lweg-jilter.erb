@@ -1,0 +1,107 @@
+#!/bin/bash
+
+SERVICE_NAME=lweg-jilter
+LWG_PATH=<%=@apps_dir%>/EmailJournal
+export CURRENT_DIR=$LWG_PATH
+PATH_TO_JAR="-Xms2g -Xmx8g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data1/heapdump -Djava.rmi.server.hostname=192.168.119.143 -Dlog4j.configuration=file:$LWG_PATH/configs/log4j.properties -classpath $LWG_PATH/lib/jackson-databind-2.7.0.jar:$LWG_PATH/lib/jutf7-1.0.0.jar:$LWG_PATH/lib/jackson-core-2.7.0.jar:$LWG_PATH/lib/jackson-annotations-2.7.0.jar:$LWG_PATH/lib/mongo-java-driver-3.2.0.jar:$LWG_PATH/lib/gson-2.5.jar:$LWG_PATH/lib/validation-api-1.1.0.Final.jar:$LWG_PATH/lib/org.eclipse.persistence.antlr-2.5.0.jar:$LWG_PATH/lib/org.eclipse.persistence.asm-2.5.0.jar:$LWG_PATH/lib/org.eclipse.persistence.core-2.5.0.jar:$LWG_PATH/lib/org.eclipse.persistence.moxy-2.5.0.jar:$LWG_PATH/lib/hk2-api-2.2.0.jar:$LWG_PATH/lib/hk2-utils-2.2.0.jar:$LWG_PATH/lib/hk2-locator-2.2.0.jar:$LWG_PATH/lib/javassist-3.18.1-GA.jar:$LWG_PATH/lib/javax.annotation-api-1.2.jar:$LWG_PATH/lib/javax.inject-2.2.0.jar:$LWG_PATH/lib/javax.servlet-api-3.1.0.jar:$LWG_PATH/lib/javax.ws.rs-api-2.0.jar:$LWG_PATH/lib/jaxb2-basics-runtime-0.9.4.jar:$LWG_PATH/lib/jersey-client-2.7.jar:$LWG_PATH/lib/jersey-common-2.7.jar:$LWG_PATH/lib/jersey-container-jetty-http-2.7.jar:$LWG_PATH/lib/jersey-container-servlet-core-2.7.jar:$LWG_PATH/lib/jersey-entity-filtering-2.7.jar:$LWG_PATH/lib/jersey-guava-2.7.jar:$LWG_PATH/lib/jersey-media-moxy-2.7.jar:$LWG_PATH/lib/jersey-server-2.7.jar:$LWG_PATH/lib/jetty-continuation-9.1.1.v20140108.jar:$LWG_PATH/lib/jetty-http-9.2.3.v20140905.jar:$LWG_PATH/lib/jetty-io-9.2.3.v20140905.jar:$LWG_PATH/lib/jetty-security-9.2.3.v20140905.jar:$LWG_PATH/lib/jetty-server-9.2.3.v20140905.jar:$LWG_PATH/lib/jetty-servlet-9.2.3.v20140905.jar:$LWG_PATH/lib/jetty-util-9.2.3.v20140905.jar:$LWG_PATH/AlcatrazEmailGateway.jar:$LWG_PATH/lib/log4j-1.2.17.jar:$LWG_PATH/lib/activation-1.1.1.jar:$LWG_PATH/lib/commons-codec-1.9.jar:$LWG_PATH/lib/commons-email-1.4.jar:$LWG_PATH/lib/commons-logging-1.2.jar:$LWG_PATH/lib/httpclient-4.5.jar:$LWG_PATH/lib/httpcore-4.4.1.jar:$LWG_PATH/lib/jaxb2-basics-runtime-0.9.4.jar:$LWG_PATH/lib/junit-3.8.1.jar:$LWG_PATH/lib/log4j-1.2.17.jar:$LWG_PATH/lib/mail-1.4.7.jar:$LWG_PATH/lib/metrics-core-3.1.0-sources.jar:$LWG_PATH/lib/slf4j-api-1.7.5.jar:$LWG_PATH/lib/slf4j-log4j12-1.7.5.jar:$LWG_PATH/lib/slf4j-simple-1.6.4.jar:$LWG_PATH/lib/slf4j-api-1.7.7.jar:$LWG_PATH/lib/json-20090211.jar:$LWG_PATH/lib/xml-security-impl-1.0.jar:$LWG_PATH/lib/commons-lang3-3.0.jar:$LWG_PATH/lib/metrics-core-3.1.0.jar:$LWG_PATH/lib/actiance-coc-calculator-1.0.0.jar:$LWG_PATH/lib/guava-18.0.jar:$LWG_PATH/lib/stax2-api-4.0.0.jar:$LWG_PATH/lib/woodstox-core-5.0.3.jar:$LWG_PATH/lib/commons-io-2.4.jar:$LWG_PATH/lib/org.apache.commons.io.jar com.sendmail.jilter.server.standalone.JilterServer"
+ARGS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9020 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+PID_PATH_NAME="/tmp/$SERVICE_NAME.pid"
+#echo $PATH_TO_JAR
+
+
+
+function jilterStart(){
+echo "Starting $SERVICE_NAME."
+if [ ! -f $PID_PATH_NAME ]; then
+	nohup java $ARGS $PATH_TO_JAR $MAIN_CLASS /tmp 2>> /dev/null >> /dev/null & 
+        echo $! > $PID_PATH_NAME
+        echo "$SERVICE_NAME started successfully."
+else
+        PID=$(cat $PID_PATH_NAME);
+        res=`ps -ef | grep -v grep | grep $PID | wc -l`
+        if [ $res -eq 0 ]; then
+        	echo "Removing the stale PID file and starting service again"
+                rm $PID_PATH_NAME
+                nohup java $ARGS $PATH_TO_JAR  $MAIN_CLASS /tmp 2>> /dev/null >> /dev/null &
+                echo $! > $PID_PATH_NAME
+        else
+        	echo "$SERVICE_NAME is already running."
+        fi
+fi
+}
+
+function jilterStop(){
+if [ -f $PID_PATH_NAME ]; then
+	PID=$(cat $PID_PATH_NAME);
+        echo "$SERVICE_NAME stoping."
+        res=`ps -ef | grep -v grep | grep $PID | wc -l`
+        if [ $res -gt 0 ]; then
+        	kill -9 $PID;
+	        rm -f $PID_PATH_NAME
+        	echo "$SERVICE_NAME stopped successfully"
+	else
+                echo "$SERVICE_NAME stopped successfully"
+                rm -f $PID_PATH_NAME
+        fi
+else
+	echo "$SERVICE_NAME is not running."
+
+fi
+
+}
+
+function jilterStatus(){
+if [ -f $PID_PATH_NAME ]; then
+	PID=$(cat $PID_PATH_NAME);
+        res=`ps -ef | grep -v grep | grep $PID | wc -l`
+	 if [ $res -gt 0 ]; then
+        	echo "$SERVICE_NAME running."
+        else
+        	echo "$SERVICE_NAME is not running."
+        fi
+else
+	echo "$SERVICE_NAME is not running."
+        rm -f $PID_PATH_NAME
+fi
+}
+
+function jettystatus(){
+restport=$(grep "RESTServiceListnerPort" $LWG_PATH/configs/config.properties | grep -v "#" | awk -F"=" '{print $2}')
+ip=$(hostname -I)
+sleep 10
+`nc -zv "$ip" "$restport"`
+if [[ $? -ne 0 ]]; then
+	echo "Jetty server is not running."
+else
+        echo "Jetty server is running."
+fi
+
+
+}
+
+
+case $1 in
+start)
+	jilterStart
+;;
+stop)
+	jilterStop
+;;
+status)
+	jilterStatus
+;;
+restart)
+	jilterStop
+	jilterStart
+;;
+
+jettystatus)
+	jettystatus
+;;
+*)
+    echo "Usage: $0 {status|start|stop|restart|jettystatus}"
+    exit 1
+;;
+esac
+
+

@@ -1,0 +1,1 @@
+/apps/storm/bin/storm  jar /apps/storm/apclibs/actiance-cis-dpe-lycan-core*.jar  com.actiance.platform.sfab.cis.dpe.lycan.fa.pipeline.ingestion.itm.ITMLFSIngestionPipelineTopology /apps/storm/conf/server.properties tocluster /apps/storm/conf/server.lfs.properties

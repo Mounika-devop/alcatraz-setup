@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pconf_dir=/etc/puppet/environments
+env=$(hostname | awk -F- '{print $2}')
+rm -rf $pconf_dir/prod

@@ -1,0 +1,17 @@
+[Unit]
+Description=Apache Kafka server (broker)
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target zookeeper.service
+
+[Service]
+User=<%= @kafka_user %>
+Group=<%= @kafka_group %>
+Type=simple
+Environment=JAVA_HOME=<%= @java_home %>
+ExecStart=<%= @kafka_dir %>/bin/kafka-server-start.sh <%= @kafka_dir %>/config/server.properties
+SuccessExitStatus=143
+LimitNOFILE=400000
+
+[Install]
+WantedBy=multi-user.target

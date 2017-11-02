@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA=$JAVA_HOME/bin/java
+export CACHE_HOME=<%= @hazelcast_home %>
+exec "$JAVA" -cp "../lib/*:../apclib/*:" "-Xms<%= @hazelcast_jvm_min_mem %>" "-Xmx<%= (@memorysize_mb.to_i)/2000+1 %>g" "-XX:+HeapDumpOnOutOfMemoryError" "-XX:HeapDumpPath=<%= @heapdump_file_path %>" -Duser.timezone=GMT -Djava.net.preferIPv4Stack=true -Dcom.sun.management.jmxremote -Dhazelcast.jmx=true -Dserver.props="../conf/server.properties"  -Dhazelcast.config.xml="../conf/hazelcast.xml" -Dhazelcast.rest.enabled=true -verbose:class com.actiance.platform.sfab.cis.cache.server.AlcatrazHazelcastServer
+

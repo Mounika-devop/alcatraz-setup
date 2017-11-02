@@ -1,0 +1,11 @@
+#!/bin/bash 
+
+#topics=(cephboot cephbootsec drPriPrimary drPriSecondary drSeqPrimary drSeqSecondary exportArchiveLargeTopic exportArchiveMediumLargeTopic exportArchiveMediumTopic exportArchivePriorityTopic exportArchiveSmallMediumTopic exportArchiveSmallTopic exportEdiscoveryLargeTopic exportEdiscoveryMediumLargeTopic exportEdiscoveryMediumTopic exportEdiscoveryPriorityTopic exportEdiscoverySmallMediumTopic exportEdiscoverySmallTopic exportPriorityTopic exportSupervisionLargeTopic exportSupervisionMediumLargeTopic exportSupervisionMediumTopic exportSupervisionPriorityTopic exportSupervisionSmallMediumTopic exportSupervisionSmallTopic holdLargeTopic holdMediumTopic holdSmalTopic jobs largeHoldTagTopic largemsg mediumHoldTagTopic purge reindex rs1 smallHoldTagTopic supervisionlargeHoldTagTopic supervisionLargeTopic supervisionmediumHoldTagTopic supervisionMediumTopic supervisionsmallHoldTagTopic supervisionSmalTopic lfs)
+#
+#for topic in ${topics[@]}
+#do
+#    echo $topic
+#done
+
+
+

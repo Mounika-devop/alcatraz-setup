@@ -1,0 +1,1 @@
+IMPORTANT: Please download kafka and zookeeper packages downloaded and extracted here

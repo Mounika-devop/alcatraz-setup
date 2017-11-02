@@ -1,0 +1,16 @@
+---
+### For puppetmaster installation
+
+- hosts: puppet-servers
+  remote_user: sysops
+  become: yes
+  become_method: sudo
+  roles:
+      - puppet-master-installation
+
+- hosts: puppet-clients
+  remote_user: sysops
+  become: yes
+  become_method: sudo
+  roles:
+      - puppet-client-installation

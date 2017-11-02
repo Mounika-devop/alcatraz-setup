@@ -1,0 +1,15 @@
+[Unit]
+Description=Karaf StartUp Script
+
+[Service]
+User=<%=@karaf_user%>
+Group=<%=@karaf_group%>
+Type=forking
+Environment=JAVA_HOME=<%=@java_home%>
+ExecStart=<%=@karaf_home%>/bin/start
+SuccessExitStatus=143
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+

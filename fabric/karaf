@@ -1,0 +1,142 @@
+#!/bin/bash
+SERVICE_NAME=karaf_apc
+KARAF_PATH=/home/sysops/apps/karaf
+export CURRENT_DIR=$KARAF_PATH
+PID_PATH_NAME=/tmp/$SERVICE_NAME
+
+function Sleep {
+	for i in `seq 1 $1`
+	do
+		echo -ne "$i\r"
+		sleep 1
+	done
+}
+
+case $1 in
+start)
+	if [ ! -f $PID_PATH_NAME ]; then
+	    echo "Starting $SERVICE_NAME."
+		nohup $KARAF_PATH/bin/start 2>> /dev/null >> /dev/null &
+		#echo $! > $PID_PATH_NAME
+		#echo "Please wait 10 sec for the process to begin"
+		ACTUAL_PID=`ps -ef | grep -v grep | grep org.apache.karaf.main.Main | awk '{print $2}'`
+		echo $ACTUAL_PID > $PID_PATH_NAME
+		echo "$SERVICE_NAME started."
+	else
+		PID=$(cat $PID_PATH_NAME)
+		PID_VARIABLE='org.apache.karaf.main.Main'
+        if [ $PID == ""  ];then echo "PID file is empty";fi
+		res=`ps -ef | grep -v grep | grep $PID_VARIABLE | wc -l 2> /tmp/error`
+		if [ $res -eq 0 ]; then
+			echo "Removing the stale PID file and starting service again"
+			rm $PID_PATH_NAME
+			nohup $KARAF_PATH/bin/start 2>> /dev/null >> /dev/null &
+			#echo $! > $PID_PATH_NAME
+		        ACTUAL_PID=`ps -ef | grep -v grep | grep org.apache.karaf.main.Main | awk '{print $2}'`
+		        echo $ACTUAL_PID > $PID_PATH_NAME
+		else
+			echo "$SERVICE_NAME is already running."
+		fi
+	fi
+;;
+stop)
+	if [ -f $PID_PATH_NAME ]; then
+		PID_VARIABLE='org.apache.karaf.main.Main'
+		PID=$(ps -ef | grep -v grep | grep $PID_VARIABLE | awk '{print $2}')
+        	res=`ps -ef | grep -v grep | grep $PID_VARIABLE | wc -l`
+		echo "$SERVICE_NAME stopping."
+		if [ $res -gt 0 ]; then
+			cd $KARAF_PATH && bin/stop
+			Sleep 20
+			double_check=`ps -ef | grep -v grep | grep $PID_VARIABLE | wc -l`
+			PID=$(ps -ef | grep -v grep | grep $PID_VARIABLE | awk '{print $2}')
+			if [ $double_check -gt 0 ]; then
+				for pid in $PID
+				do
+					echo "Stopping Karaf process id $pid"
+					kill -TERM $pid
+					Sleep 20
+				done
+			fi			
+			rm -rf $PID_PATH_NAME
+			echo "$SERVICE_NAME stopped."
+		else
+			echo "$SERVICE_NAME stopped."
+			rm -rf $PID_PATH_NAME
+		fi
+	else
+		PID_VARIABLE='org.apache.karaf.main.Main'
+		PID=$(ps -ef | grep -v grep | grep $PID_VARIABLE | awk '{print $2}')
+		#echo "PIDS: $PID"
+		if [[ $PID == "" ]]
+		then
+			echo "$SERVICE_NAME is not running."
+		else
+		   for pid in $PID
+		   do
+			echo "Stopping Karaf process id $pid"
+			cd $KARAF_PATH && bin/stop
+			Sleep 20
+			double_check=`ps -ef | grep -v grep | grep $PID_VARIABLE | awk '{print $2}'| wc -l`
+			if [ $double_check -gt 0 ]; then
+				kill -TERM $pid
+				Sleep 20
+			fi			
+			rm -rf $PID_PATH_NAME
+			echo "$SERVICE_NAME stopped."
+		   done
+		fi
+	fi
+;;
+status)
+	 if [ -f $PID_PATH_NAME ]; then
+		PID_VARIABLE='org.apache.karaf.main.Main'
+        PID=$(cat $PID_PATH_NAME);
+        res=`ps -ef | grep -v grep | grep $PID_VARIABLE | wc -l`
+		if [ $res -gt 0 ]; then
+			echo "$SERVICE_NAME running."
+		else
+			echo "$SERVICE_NAME is not running."
+		fi
+	elif [ ! -f $PID_PATH_NAME ]
+	then
+		echo "$SERVICE_NAME is not running"
+	else
+		echo "$SERVICE_NAME is not running."
+		rm -f $PID_PATH_NAME
+	fi
+;;
+restart)
+	if [ -f $PID_PATH_NAME ]; then
+		PID=$(cat $PID_PATH_NAME);
+		echo "$SERVICE_NAME stopping ...";
+		$KARAF_PATH/bin/stop
+		sleep 30
+		double_check=`ps -ef | grep -v grep | grep $PID | wc -l`
+		if [ $double_check -gt 0 ]; then
+			kill -TERM $PID
+			sleep 30
+		fi
+		echo "$SERVICE_NAME stopped ...";
+		rm $PID_PATH_NAME
+		echo "$SERVICE_NAME starting ..."
+		nohup $KARAF_PATH/bin/start 2>> /dev/null >> /dev/null &
+		#echo $! > $PID_PATH_NAME
+		sleep 30
+		ACTUAL_PID=`ps -ef | grep -v grep | grep org.apache.karaf.main.Main | awk '{print $2}'`
+		echo $ACTUAL_PID > $PID_PATH_NAME
+		echo "$SERVICE_NAME started ..."
+	else
+		echo "$SERVICE_NAME is not running ..."
+		echo "$SERVICE_NAME starting ..."
+		nohup $KARAF_PATH/bin/start 2>> /dev/null >> /dev/null &
+		#echo $! > $PID_PATH_NAME
+		sleep 30
+		ACTUAL_PID=`ps -ef | grep -v grep | grep org.apache.karaf.main.Main | awk '{print $2}'`
+		echo $ACTUAL_PID > $PID_PATH_NAME
+		echo "$SERVICE_NAME started ..."		
+	fi
+;;
+esac
+
+

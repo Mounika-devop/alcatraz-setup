@@ -1,0 +1,7 @@
+---
+- name: restart puppetmaster
+  service: name=puppetmaster state=restarted
+
+- name: stop puppet
+  service: name=puppet state=stopped
+

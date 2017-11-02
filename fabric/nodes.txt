@@ -1,0 +1,10 @@
+fab-storlab-cephmon-h3
+fab-storlab-kibana-h3
+fab-storlab-mdbconf-h3
+fab-storlab-kafzoo-h3
+fab-storlab-egw-h3
+fab-storlab-haz-h3
+fab-storlab-karaf-h3
+fab-storlab-stm-h3
+fab-storlab-cephdep-h3
+

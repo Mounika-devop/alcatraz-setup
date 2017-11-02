@@ -1,0 +1,7 @@
+---
+- name: Install Puppet Master
+  apt: name=puppetmaster state=present
+
+- name: Configure puppet master
+  template: src=puppet.conf dest=/etc/puppet/
+  notify: restart puppetmaster

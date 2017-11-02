@@ -1,0 +1,1 @@
+Please have kafka and zookeeper package place here in this directory

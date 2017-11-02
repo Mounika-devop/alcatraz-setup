@@ -1,0 +1,9 @@
+dbpath = <%= @dbpath %>
+logpath = <%= @logpath_file %>
+logappend = <%= @logappend %>
+configsvr = true
+port = <%= @port %>
+storageEngine = wiredTiger
+rest = true
+sslMode = requireSSL
+sslPEMKeyFile = /etc/ssl/mongodb.pem

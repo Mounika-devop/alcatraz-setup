@@ -1,0 +1,67 @@
+# This is the main configuration file where the authentication and authorization
+# backends as well as the http authenticators and other settings will be defined.
+#
+# The authentication works like that:
+# 
+# If there are no authenticators (authc) defined a implicit one will be created.
+# This will authenticate against the internal user database and use HTTP Basic.
+#
+# If more than one is configured the first one which succeeds wins. If all fail then the request will be unauthenticated
+# and a respective exception is thrown and/or the HTTP status is set to 401.
+# 
+# After authentication authorization (authz) will be applied. There can be zero or more authorizers which collect
+# the roles from a given backend for the authenticated user.
+#
+# For HTTP is possible to allow anonymous authentication. If that is allowed then the http authenticators try to
+# find user credentials in the HTTP request and if such where found then the user gets regularly authenticated.
+# If none can be found the user will be authenticated as an "anonymous" user. This user has always the username "sg_anonymous"
+# and one role named "sg_anonymous_backendrole". If you enable anonymous authentication for all http authenticators will not challenge.
+# 
+#
+# Notice: If you define more than one authenticator make sure to put non-challenging authenticators like "proxy" or "clientcert"
+# at the beginning and the challenging one at the end. If you configure more than one challenging authenticator you have to deal with
+# the "challenge" flag. Because its not possible to challenge a client with two different authentication methods (for example
+# Kerberos and Basic) only one can have challenge: true. All others need to have challenge: false and that means
+# they look into the request and if they found no credentials they will not challenge. You can cope with this situation
+# with pre-authentication. That is submitting credentials for non-challenging authenticators within the first request
+# (Thats especially easy for Basic authentication). 
+# Default value of the challenge flag is true.
+#
+# 
+#
+# HTTP
+#   basic (challenging)
+#   proxy (not challenging, needs xff)
+#   kerberos (challenging) NOT FREE FOR COMMERCIAL
+#   clientcert (not challenging, needs https)
+#   jwt (not challenging) NOT FREE FOR COMMERCIAL
+#   host (not challenging)
+
+# Authc
+#   internal
+#   noop
+#   ldap  NOT FREE FOR COMMERCIAL USE
+
+# Authz
+#   ldap  NOT FREE FOR COMMERCIAL USE
+#   noop
+
+searchguard:
+  dynamic:
+    authc:
+      basic_internal_auth_domain: 
+        enabled: true
+        order: 1
+        http_authenticator:
+          type: basic
+          challenge: true
+        authentication_backend:
+          type: internal
+      transport_auth_domain:
+        enabled: true
+        order: 2
+        http_authenticator:
+          type: clientcert
+          challenge: false
+        authentication_backend:
+          type: internal

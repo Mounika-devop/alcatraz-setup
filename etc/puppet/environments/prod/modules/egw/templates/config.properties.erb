@@ -1,0 +1,290 @@
+# Setup DEV or Production (DEV/PROD)
+#setup = PROD
+Environment = PROD
+
+
+# ITM Preconfigured values
+network = Journal
+channel = email-channel
+network_endPointIdType = email
+ReportingNode = DEV-AUTOPROV-H1
+source-endpoint-id = LWJGetway Tools for MS Exchange Server
+source_endpoint_version =0.0.1
+
+
+# Modality Types are ("federated"/"public"/"private")
+modality_vendor =Actiance
+modality_classification= email
+modality_type =public
+
+
+# Application InetAddress
+#inetAddress = inet:12345@192.168.119.27
+inetAddress = inet:1121@0.0.0.0
+
+
+#Configure ThreadPool Params
+# Core Pool Size
+#CorePoolSize = 150
+CoreThreadPoolSize = 150
+
+
+# Max Pool Size
+#maximumPoolSize =100
+MaximumThreadPoolSize =200
+
+
+# Connection TimeOut (in MINUTES)
+keepAliveTime = 30
+
+
+# CheckSum Algorithm 
+cksAlgorithm= SHA1
+
+
+#InComming Domain validation (Default: False (True/False))
+isIncommingSenderValidation=YES
+
+
+# This will come into picture if "isIncommingSenderValidation = True " 
+#InComming Domain validation(set to 'True' if validation on domain Name like "@gamil.com", 
+# set 'False' if need to validate on basis of complete email address like "person.name@gmail.com"
+isDomainValidation=YES
+
+
+# Polling Interval for DB (format : HHMMSS, e.g 153000)
+DBPollingInterval=000100
+
+
+#Enable Store ITMXML- ONERROR #(YES|NO|ONERROR). This property instructs jilter to save ITMs to disk depending on the value set.
+EnableStoreITMXML=YES
+
+#ITMXML Store Folder- folder with proper permissions to store ITM
+ITMXMLStoreFolder=<%=@data_dir%>/ITMXmls/
+
+#EnableReconciliationLog- Enable the Reconciliation Log to YES by default
+EnableReconciliationLog=YES
+
+#ReconciliationLogFolder- Folder path to store reconciliation logs
+ReconciliationLogFolder=<%=@data_dir%>/ReconcilationLog/
+
+
+#Enable Large Msg Processing to YES by default
+EnableLargeMsgProcessing = NO
+
+#MaxLengthOfMessage in Bytes-Stores Maximum Threshold length of message
+MaxThresholdLengthOfMessage = 107374182444444444
+
+#LargeMsgFolderPath- Folder path to process large mails ITM
+LargeMsgFolderPath=<%=@data_dir%>/LargeAttachments/
+
+#For Handling unprocessed mime message
+EnableUnprocessedMIMEmsgProcessing = NO
+
+#SaveMIMEmsgOnFailureITM- ONERROR #(YES|NO|ONERROR). This property instructs jilter to save MIME to disk depending on the value set
+SaveMIMEmsgOnFailureITM=YES
+
+#MIMEMsgFolderPath-Folder path to store MIME if jilter fails to send it to alcatraz
+MIMEMsgFolderPath=<%=@data_dir%>/UnProcessedMIME/
+
+#Add checksum tag in ITM XML
+EnableAttributeCheckSum= YES
+
+#Config Error codes for REJECT and DISCARD
+#RejectErrorCodes = 401,5006,400
+#DiscardErrorCodes  = 5001,5002,5003,5004,5005,5008,2009,5000,500,200,5009,5010,5007
+RejectErrorCodes = 5100,5006
+DiscardErrorCodes  = 5002,5003,5004,5005,5008,2009,5010,5007,500,5009,200,400,
+TempFailureErrorCodes = 404,401
+
+DontSaveMimeErrorCodes= 5003,5004,5005
+#200,5002,5003,5004,5005,5008,2009,5009,5007,400
+#Encryption YES/NO- This property changes the Secret Key and the Password in an encrypted format
+EnableEncryption= NO
+
+#LargeMsgTempFailureFolderPath=Folder path to store large ITM xml in case of temporary failure
+LargeMsgTempFailureFolderPath=<%=@data_dir%>/LargeAttachments/TempFailure
+
+#LargeMsgFailureFolderPath=Folder path to store large ITM xml in case of permanent failure
+LargeMsgFailureFolderPath=<%=@data_dir%>/LargeAttachments/Failure
+
+#DominoJournal YES/NO
+isDominoJournal= YES
+
+#EMLSource- Folder which stores the emlfiles
+EMLSource = <%=@data_dir%>/emlfiles
+
+# Type of EML files (YES/NO Default: NO)
+TreatEMLAsJournal=YES
+
+#AddDLNameToParticipants= DL Name added as participant name , set to YES by default
+AddDLNameToParticipants=YES
+
+#(YES/NO) Default: NO
+#GenerateSingleITMPerMsgId= NO
+GenerateSingleITMPerMsgId= NO
+
+
+#Alcatraz SchemaVersion
+Alcatraz_schemaVersion=1.0
+
+#Domain Name for SMTP Address- Jilter generates a SMTP Mailbox address as per the domain name set to this property
+#SmtpDomainName=@postfix-domino.actiance.local
+#SmtpDomainName=@qaedu.com
+#SmtpDomainName=@o365egw.blrresearch.com
+#SmtpDomainName=@test.perfalz.net
+SmtpDomainName=@exch.blrresearch.com
+
+#MongoDB IP- IP address of the mongo router
+MongoIP=<%=@hostname%>
+#MongoIP=192.168.117.199
+
+#MongoDB Port- Port number of the mongo router
+MongoPORT=23757
+
+#Enable Mongo Authentication (YES/NO) (Default : NO)
+EnableMongoAuth=YES
+
+MongoDBName=admin
+#MongoDBName=admin
+#MongoUserName=admin
+
+MongoUserName=admin
+MongoPassword=pr8d8CSVJI1yRPlSk1GHxA==
+
+
+# Reprocessor will trigger when got below status code from Alcatraz) 
+ReprocessorErrorCodes  =400
+
+# RestServiceListnerPort- REST API call is made b/w Alcatraz and jilter via this port number
+# RestServiceListnerPort=8443
+#RESTServiceListnerPort=8443
+RESTServiceListnerPort=8443
+
+
+#Jilter DB in MONGO- Tenancy details in Mongo
+EGDB=TenantConfigurations
+TenantCollectionName=TenantsMaster
+EndpointCollectionName=EndPoints
+
+# Flag to use AlcatrazConfig file or Connect to DataBase (YES/NO) (Default : NO)
+#ReadAlcatrazConfig=NO
+#ReadAlcatrazConfigFromFile=NO
+ReadAlcatrazConfigFromFile=NO
+
+# Enable HTTPS (True/False)(Default: False)
+# Enable_HTTPS- HTTPS is always enabled to YES
+#EnableHTTPS = YES
+EnableHTTPS = YES
+
+#TLS Version ("TLSv1", "TLSv1.2")
+TLSVersion= TLSv1.2
+#TLSVersion= TLSv1
+
+
+
+#jetty.keystore.path- Folder path to store egw.jks file
+#jettyKeyStorePath= <%=@data_dir%>/data/keystore.jks
+jettyKeyStorePath= <%=@data_dir%>/data/egw.jks
+
+#jettyKeystorePassword- Password of the keystore file
+jettyKeystorePassword= facetime
+
+#jettyKeymanagerPassword=  Password of the keymanager file
+jettyKeymanagerPassword= facetime
+
+#System Health Check Frequency (format : HHMMSS, e.g 000100)
+HealthCheckPollingInterval =000110
+
+#Subtracting Participants from BCC List and is set to "NO"
+#Deduce=NO
+DeduceBccParticipants=NO
+
+#Calculate MIME size of NoTenant Match (True/False) (Default: True)-Path to store total mime size for No Tenant Match and is set to YES by default
+CalculateNoTenantMimeSize=YES
+#CalculateMimeSizeOfUnmatchedTenants=YES
+
+# Large Message Pool Size (Default: 10)
+#LargeMsgPoolSize = 10
+LargeMsgThreadPoolSize = 1
+
+#Folder Path to store Metrics logs
+MetricsLogFolderPath=<%=@data_dir%>/MetricsLog
+
+# Printing KPI Metrics frequency in Minuit (Default : 1 min)- Tenant wise metrics will written to a log file as per the defined interval
+#PrintMetricsKPIInMin = 1
+KPIMetricsInterval = 1
+
+#This setting is to for Automatic FallBack mechanism for Re-ingestion. (YES/NO, Default=YES)
+EnableReingestion=NO
+
+# ITM Related Settings
+#To Remove User-Id Tag in ITM XML . (YES/NO , Default : NO)
+ITMXMLRemoveUserIdTag=YES
+#ITMXMLRemoveUserIdTag=YES
+
+#Add checksum tag in ITM XML
+#EnableAttributeCheckSum= YES
+
+#Configure Journal String (value1,value2 : @perfdomino.com,@journal.report.generator)
+journalStringIdentifier = @journal.report.generator,@perfdomino.com,@actiance.local
+
+#Header Keys for Searchable Headers index 'true'
+#IndexableHeaders = From,To,Cc,Bcc,Date,Subject
+IndexableHeaders = from,to,cc,bcc,date,subject
+#IndexableHeaders = 
+
+# Removing "x-ms-exchange-organization-originalarrivaltime" from header Parameters
+# Default: NO (YES/NO)
+skipOriginalArrivalTimeHeader=true
+
+# TrustMark Related changes (Phase-1)
+# (Default :NO (YES/NO)
+DontDispatchToDIG = NO
+#DontDispatchToDIG = YES
+
+TenantsToSave=journal1@postfix.com,sagar@actiance.com,singam@actiance.com,6kp0rcpug8h2rh1gbetp9s66ru@postfix-domino.actiance.local
+
+#Enabling SSL for Mongo (Default: NO) (YES/NO)
+EnableMongoSSL=YES
+
+
+EnableCoC=YES
+
+# CheckSum Algorithm (sha256/md5/sha1)
+cksAlgorithm= sha1
+
+# CheckSum Encoding (hex, HEX, base 64)
+cksEncodingStyle=hex
+
+# CoC Hash Type(full, content-only)
+CoCHashType=content-only
+
+
+#Sending Unique GCID for each Transcript (Default: NO) (YES/NO)
+UniqueGCIDForEachTranscript=YES
+
+# Coc version(Default value:1)
+CoCVersion = 1
+
+# Coc classification(mime)
+CoCClassification = mime
+
+#enable/disable automatic Fall-Back mechanism when some exception occurs while parsing mimeMsg and sending as attachment. (Default =NO)
+EnableReingestionIn5007=NO
+
+#This setting is to Enable/Disable EGW Processing flag when 'replaceinvalidxmlchar' or 'embadedcontentasattachment' . (YES/NO, Default=YES)
+DisableEGWProcessFlagAttributes=YES
+
+#DLManagerDXMPatternString = X-Notes-Item: (\\w+)(\\|(DLName: ([a-zA-Z0-9-_!#$%^*&()\\[\\]{},]+))\\|(DLAddress: ([^,]+)))?([,]+)?,(.*?);
+#DLManagerDXMPatternString = X-Notes-Item: (\\w+)(\\|(DLName: ([a-zA-Z0-9-_!#$%^*&()\\[\\]{},~`]+))\\|(DLAddress: ([a-zA-Z0-9-_!#$%^*&()\\[\\]{}~`;@.]+)))?([,]+)?,(.*?); 
+# Enable DL Manager Processing for Domino (Default: NO) (YES/NO)
+EnableDXMProtocol = NO
+
+#Enabling File Encryption for eml & XML (Default: YES) (YES/NO)
+EnableFileEncryption=NO
+
+EnableXLargeMIMEProcessing = YES
+XLargeMIMEProcessThreadPoolSize = 10
+XLargeMessageThresholdSize = 62914560
+XLargeMessageTempFolder = /data1/egw/xlargemessages

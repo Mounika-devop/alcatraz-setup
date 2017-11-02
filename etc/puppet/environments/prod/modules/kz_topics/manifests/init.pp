@@ -1,0 +1,2 @@
+class kz_topics {
+}
